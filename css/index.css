@@ -1,9 +1,33 @@
 html, body{
 	height: 100%;
+	overflow: hidden;
+}
+
+@media (min-width: 700px) {
+  .layout {
+    width: 600px;
+  }
+}
+
+@media (min-width: 900px) {
+  .layout {
+    width: 800px;
+  }
+}
+
+@media (min-width: 1000px) {
+  .layout {
+    width: 900px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .layout {
+    width: 1100px;
+  }
 }
 
 .layout {
-	width: 1140px;
 	margin: 0 auto;
 }
 
@@ -56,6 +80,7 @@ main .aside .actions {
 	padding-top: 1.2vh;
 	display: flex;
 	justify-content: space-around;
+	align-items: center;
 }
 
 main .actions .iconfont {
@@ -64,6 +89,11 @@ main .actions .iconfont {
 	cursor: pointer;
 	transition: all .3s;
 }
+
+main .actions .icon-xunhuanbofang {
+    font-size: 4vh;
+}
+
 main .actions .iconfont:hover {
 	color: #fff;
 }
@@ -82,7 +112,7 @@ main .detail .tag {
 }
 
 main .detail .tag span {
-	border-radius: .3em;
+	border-radius: .2em;
 	display: inline-block;
 	background-color: #b47;
 	padding: 1vh 1.4vh;
@@ -95,6 +125,9 @@ main .detail .icons {
 main .detail li {
 	font-size: 3vh;
 	flex:1;
+}
+main .detail  i {
+	cursor: pointer;
 }
 
 main .detail h1 {
@@ -138,4 +171,69 @@ main .detail .author {
 
 main .detail .lyric {
 	color: rgba(255, 255, 255, .5);
+}
+
+footer {
+	background-color: rgba(255, 255, 255, .3);
+	color: #fff;
+}
+footer .layout {
+	position: relative;
+	height: 24vh;
+}
+
+footer .layout .iconfont {
+	position: absolute;
+	top: 5vh;
+	font-size: 8vh;
+	opacity: 0;
+	transition: all .4s;
+	cursor: pointer;
+}
+
+footer .layout:hover .iconfont {
+	opacity: .4;
+}
+
+footer .layout .iconfont:hover {
+	opacity: 1;
+}
+
+footer .layout .icon-fanhui {
+	left: -9vh;
+}
+
+footer .layout .icon-gengduo {
+	right: -9vh;
+}
+
+footer .carousel {
+  position: relative;
+  overflow: hidden;
+  height: 24vh;
+}
+
+footer li{
+  float: left;
+  margin: 2vh 2vh 0 2vh;
+  width: 20vh;
+  height: 20vh;
+  text-align: center;
+  cursor: pointer;
+}
+
+footer li:hover {
+  box-shadow: 0 0 .5vh .4vh rgba(255,255,255,0.6);
+}
+
+footer li .cover {
+  height: 16vh;
+  background-size: cover;
+  background-position: center;
+}
+
+footer h3{
+  font-size: 2vh;
+  color: rgba(255,255,255,0.6);
+  margin-top: 1vh;
 }
