@@ -13,7 +13,7 @@ ES5 + ajax + CSS3
 ## 预览地址
 https://norvca.github.io/MusicPlayer/
 
-http://js.jirengu.com/zipowopabi/2
+http://js.jirengu.com/naher
 
 ## 项目进度
 目前完成全部静态页面部分，下一阶段完成 js 部分，开发要点有播放功能、区块状态、进度条处理、歌词处理等。
