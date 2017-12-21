@@ -1,6 +1,5 @@
 html, body{
 	height: 100%;
-	overflow: hidden;
 }
 
 @media (min-width: 700px) {
@@ -57,11 +56,6 @@ main {
 	padding: 10vh 0 6vh 0;
 	height: calc(100% - 24vh);
 	display: flex;
-}
-
-footer {
-	height: 24vh;
-	background-color: #ded;
 }
 
 main .aside {
@@ -174,12 +168,13 @@ main .detail .lyric {
 }
 
 footer {
+	height: 24vh;
+	background-color: #ded;
 	background-color: rgba(255, 255, 255, .3);
 	color: #fff;
 }
 footer .layout {
 	position: relative;
-	height: 24vh;
 }
 
 footer .layout .iconfont {
@@ -209,8 +204,18 @@ footer .layout .icon-gengduo {
 
 footer .carousel {
   position: relative;
-  overflow: hidden;
   height: 24vh;
+}
+
+footer ul{
+  position: absolute;
+  left: 0;
+}
+
+footer ul:after {
+  content: '';
+  display: block;
+  clear: both;
 }
 
 footer li{
