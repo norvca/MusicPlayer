@@ -20,7 +20,7 @@ var Footer = {
 		var _this = this;
 		// ajax 获取歌曲封面数据
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', 'http://api.jirengu.com/fm/getChannels.php', true);
+		xhr.open('GET', '//api.jirengu.com/fm/getChannels.php', true);
 		xhr.onload = function(){
 			if((xhr.status >= 200 && xhr.status <300) || xhr.status == 304){
 				var ret = JSON.parse(xhr.responseText);
