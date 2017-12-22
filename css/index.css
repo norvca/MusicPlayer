@@ -85,7 +85,7 @@ main .aside .actions {
 
 main .actions .iconfont {
 	font-size: 5vh;
-	color: #888;
+	color: #bbb;
 	cursor: pointer;
 	transition: all .3s;
 }

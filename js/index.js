@@ -112,10 +112,13 @@ var Footer = {
 	}
 };
 
+// 主要区域
 var Main = {
 	init: function(){
 		this.audio = new Audio();
 		this.audio.autoplay = true;
+		this.btn = document.querySelector('.btn-play');
+		this.next = document.querySelector('.btn-next');
 		this.bind();
 	},
 	bind: function(){
@@ -123,6 +126,21 @@ var Main = {
 		EventCenter.on('select-albumn', function(object){
 			_this.channelId = object.detail.channelId;
 			_this.channelName = object.detail.channelName;
+			_this.loadMusic();
+		});
+		this.btn.addEventListener('click', function(){
+			// icon-bofangqi-zanting
+			if( this.classList.contains('icon-bofangqi-bofang') ){
+				_this.audio.play();
+				this.classList.remove('icon-bofangqi-bofang');
+				this.classList.add('icon-bofangqi-zanting');
+			}else {
+				_this.audio.pause();
+				this.classList.remove('icon-bofangqi-zanting');
+				this.classList.add('icon-bofangqi-bofang');
+			}
+		});
+		this.next.addEventListener('click', function(){
 			_this.loadMusic();
 		});
 	},
@@ -146,6 +164,8 @@ var Main = {
 		xhr.send();
 	},
 	setMusic: function(){
+		this.btn.classList.remove('icon-bofangqi-bofang');
+		this.btn.classList.add('icon-bofangqi-zanting');
 		this.audio.src = this.song.url;
 		document.querySelector('.tag span').innerText = this.channelName;
 		document.querySelector('.detail h1').innerText = this.song.title;
