@@ -211,6 +211,7 @@ footer .carousel {
 
 footer ul{
   position: absolute;
+  transition: all .3s;
   left: 0;
 }
 
