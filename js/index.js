@@ -39,15 +39,18 @@ var Footer = {
 		// 底部滑动区事件代理,原生方法多次尝试失败，先引入 jQ 解决。
 		$('.carousel ul').on('click','li',function(){
 			$(this).addClass('active').siblings().removeClass('active');
-			// 点击向 Main 区域发送
-			EventCenter.fire('select-albumn', this.getAttribute('channel_id') );
+			// 点击向 Main 区域发送 channel_id
+			EventCenter.fire('select-albumn', {
+				channelId: this.getAttribute('channel_id'),
+				channelName: this.getAttribute('channel_name')
+			});
 		});
 	},
 	render: function(){
 		var _this = this;
 		// ajax 获取歌曲封面数据
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', '//api.jirengu.com/fm/getChannels.php', true);
+		xhr.open('GET', 'http://api.jirengu.com/fm/getChannels.php', true);
 		xhr.onload = function(){
 			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
 				var ret = JSON.parse(xhr.responseText);
@@ -101,6 +104,7 @@ var Footer = {
 	slideRight: function(){
 		var carouselWidth = this.carousel.offsetWidth;
 		var liCount = Math.floor(carouselWidth / this.channelWidth);
+		// Caution! 往右滑动最终定位不准确，待修复！
 		if(this.carousel.offsetWidth * (this.count+1) < this.ulBox.offsetWidth){
 			this.count++;
 			this.ulBox.style.left = -this.count * liCount * this.channelWidth + 'px';
@@ -110,12 +114,44 @@ var Footer = {
 
 var Main = {
 	init: function(){
+		this.audio = new Audio();
+		this.audio.autoplay = true;
 		this.bind();
 	},
 	bind: function(){
-		EventCenter.on('select-albumn', function(data){
-			console.log(data.detail);
+		var _this = this;
+		EventCenter.on('select-albumn', function(object){
+			_this.channelId = object.detail.channelId;
+			_this.channelName = object.detail.channelName;
+			_this.loadMusic();
 		});
+	},
+	loadMusic: function(){
+		var _this = this;
+		// Ajax 获取歌曲内容
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', 'http://api.jirengu.com/fm/getSong.php?channel='+ _this.channelId, true);
+		xhr.onload = function(){
+			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
+				var ret = JSON.parse(xhr.responseText);
+				_this.song = ret.song[0];
+				_this.setMusic();
+			}else{
+				alert('服务器异常！Ajax请求失败');
+			}
+		};
+		xhr.onerror = function(){
+			alert('网络错误！Ajax请求失败');
+		};
+		xhr.send();
+	},
+	setMusic: function(){
+		this.audio.src = this.song.url;
+		document.querySelector('.tag span').innerText = this.channelName;
+		document.querySelector('.detail h1').innerText = this.song.title;
+		document.querySelector('.author').innerText = this.song.artist;
+		document.querySelector('figure').style.backgroundImage = 'URL('+ this.song.picture +')';
+		document.querySelector('.bg').style.backgroundImage = 'URL('+ this.song.picture +')';
 	}
 };
 
