@@ -11,7 +11,7 @@
 ES5 + ajax + CSS3
 
 ## 预览地址
-http://js.jirengu.com/wabejalivo
+http://js.jirengu.com/havodulape/2
 
 ## 项目进度
 目前完成全部静态页面部分和底部导航滑动效果，下一阶段开发要点有播放功能、区块状态、进度条处理、歌词处理等。

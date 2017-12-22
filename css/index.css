@@ -53,6 +53,11 @@ html, body{
   background: rgba(0,0,0,0.4);
 }
 
+.active {
+	transition: .3s;
+	transform: scale(1.05);
+}
+
 main {
 	padding: 10vh 0 6vh 0;
 	height: calc(100% - 24vh);
@@ -231,7 +236,7 @@ footer li{
 }
 
 footer li:hover {
-  box-shadow: 0 0 .5vh .4vh rgba(255,255,255,0.6);
+  box-shadow: 0 0 .5vh .4vh rgba(255,255,255,0.3);
 }
 
 footer li .cover {

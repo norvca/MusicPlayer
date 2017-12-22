@@ -1,3 +1,15 @@
+// 设置自定义事件
+var EventCenter = {
+	on: function(type, handler){
+		document.addEventListener(type ,handler);
+	},
+	fire: function(type, data){
+		return document.dispatchEvent(new CustomEvent(type, {
+			detail: data
+		}));
+	}
+};
+
 // 底部导航条渲染
 var Footer = {
 	// 初始化
@@ -7,9 +19,9 @@ var Footer = {
 		this.ulBox = document.querySelector('footer .carousel ul');
 		this.leftBtn = document.querySelector('footer .icon-fanhui');
 		this.rightBtn = document.querySelector('footer .icon-gengduo');
+		this.count = 0;
 		this.bind();
 		this.render();
-		this.count = 0;
 	},
 	bind: function(){
 		var _this = this;
@@ -22,6 +34,13 @@ var Footer = {
 		});
 		this.rightBtn.addEventListener('click', function(){
 			_this.slideRight();
+		});
+
+		// 底部滑动区事件代理,原生方法多次尝试失败，先引入 jQ 解决。
+		$('.carousel ul').on('click','li',function(){
+			$(this).addClass('active').siblings().removeClass('active');
+			// 点击向 Main 区域发送
+			EventCenter.fire('select-albumn', this.getAttribute('channel_id') );
 		});
 	},
 	render: function(){
@@ -46,7 +65,7 @@ var Footer = {
 	renderFooter: function(channels){
 		var html = '';
 		channels.forEach(function(element){
-			html += '<li>';
+			html += '<li channel_id='+ element.channel_id + ' channel_name='+ element.name + '>';
 			html += '<div class="cover" style="background-image:url('+ element.cover_small +')"></div>';
 			html += '<h3>'+ element.name +'</h3>';
 			html += '</li>';
@@ -82,11 +101,23 @@ var Footer = {
 	slideRight: function(){
 		var carouselWidth = this.carousel.offsetWidth;
 		var liCount = Math.floor(carouselWidth / this.channelWidth);
-		if(this.carousel.offsetWidth * (this.count + 1) < this.ulBox.offsetWidth){
+		if(this.carousel.offsetWidth * (this.count+1) < this.ulBox.offsetWidth){
 			this.count++;
 			this.ulBox.style.left = -this.count * liCount * this.channelWidth + 'px';
 		}
 	}
 };
 
+var Main = {
+	init: function(){
+		this.bind();
+	},
+	bind: function(){
+		EventCenter.on('select-albumn', function(data){
+			console.log(data.detail);
+		});
+	}
+};
+
 Footer.init();
+Main.init();
