@@ -119,6 +119,9 @@ var Main = {
 		this.audio.autoplay = true;
 		this.btn = document.querySelector('.btn-play');
 		this.next = document.querySelector('.btn-next');
+		this.lyric = document.querySelector('.progress p');
+		this.progressBar = document.querySelector('.progress-bar');
+		this.innerProgressBar = document.querySelector('.progress-bar-inner');
 		this.bind();
 	},
 	bind: function(){
@@ -142,6 +145,21 @@ var Main = {
 		});
 		this.next.addEventListener('click', function(){
 			_this.loadMusic();
+		});
+		// 监听歌曲的播放暂停
+		this.audio.addEventListener('play', function(){
+			// 本想用 setTimeout 模拟循环，但不知道如何清除，先用 setInterval，待解决！
+			clearInterval(_this.songPlayed);
+			_this.songPlayed = setInterval(function(){
+				_this.updateSongStatus();
+			}, 1000);
+		});
+		this.audio.addEventListener('pause', function(){
+			clearInterval(_this.songPlayed);
+		});
+		// 点击进度条滑动
+		this.progressBar.addEventListener('click', function(e){
+			_this.audio.currentTime = (e.offsetX / this.offsetWidth) * _this.audio.duration;
 		});
 	},
 	loadMusic: function(){
@@ -172,6 +190,14 @@ var Main = {
 		document.querySelector('.author').innerText = this.song.artist;
 		document.querySelector('figure').style.backgroundImage = 'URL('+ this.song.picture +')';
 		document.querySelector('.bg').style.backgroundImage = 'URL('+ this.song.picture +')';
+	},
+	// 歌曲播放时要做的事，如进度条、歌曲时间跟着改变。
+	updateSongStatus: function(){
+		var min = Math.floor(this.audio.currentTime / 60) ;
+		var sec = Math.floor(this.audio.currentTime % 60) + '';
+		sec = (sec.length == 2 ? sec : '0'+sec);
+		this.lyric.innerText = min + ':' + sec;
+		this.innerProgressBar.style.width = (this.audio.currentTime / this.audio.duration)*100 + '%';
 	}
 };
 
