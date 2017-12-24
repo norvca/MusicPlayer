@@ -11,7 +11,7 @@
 ES5 + ajax + CSS3
 
 ## 预览地址
-http://js.jirengu.com/disoz
+http://js.jirengu.com/disoz/4
 
 ## 项目进度
-主要功能完成，待修复一些BUG。
+主要功能全部完成

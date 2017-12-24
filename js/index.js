@@ -53,10 +53,22 @@ var Footer = {
 		this.rightBtn.addEventListener('click', function(){
 			_this.slideRight();
 		});
-
-		// 底部滑动区事件代理,原生方法多次尝试失败，先引入 jQ 解决。
-		$('.carousel ul').on('click','li',function(){
-			$(this).addClass('active').siblings().removeClass('active');
+		// 事件代理
+		document.querySelector('.carousel ul').addEventListener('click', function(e){
+			var el = e.target;
+			el = el.tagName.toUpperCase == 'LI' ? el : el.parentNode;
+			el.classList.add('active');
+			// 获取兄弟节点
+			var siblings = [];
+			var allChild = el.parentNode.children;
+			for(var i = 0; i < allChild.length; i++){
+				if( allChild[i] != el ){
+					siblings.push( allChild[i] );
+				}
+			}
+			siblings.forEach(function(part){
+				part.classList.remove('active');
+			});
 			// 点击向 Main 区域发送 channel_id
 			EventCenter.fire('select-albumn', {
 				channelId: this.getAttribute('channel_id'),
@@ -68,20 +80,20 @@ var Footer = {
 		var _this = this;
 		// Ajax 获取封面内容
 		myAjax({
-			url:"http://api.jirengu.com/",
+			url:'http://api.jirengu.com/',
 			data:{
-				dataType: "fm/getChannels.php",
-				index: ""
+				dataType: 'fm/getChannels.php',
+				index: ''
 			},
 			onSuccess: function(ret){
 				_this.renderFooter(ret.channels);
 			},
 			onError: {
 				onError1: function(){
-					console.log("服务器异常！封面获取失败");
+					alert('服务器异常！封面获取失败');
 				},
 				onError2: function(){
-					console.log("网络异常！封面获取失败");
+					alert('网络异常！封面获取失败');
 				}
 			}
 		});
@@ -126,8 +138,7 @@ var Footer = {
 	slideRight: function(){
 		var carouselWidth = this.carousel.offsetWidth;
 		var liCount = Math.floor(carouselWidth / this.channelWidth);
-		// Caution! 往右滑动最终定位不准确，待修复！
-		if(this.carousel.offsetWidth * (this.count+1) < this.ulBox.offsetWidth){
+		if(carouselWidth -  this.ulBox.offsetLeft < this.ulBox.offsetWidth){
 			this.count++;
 			this.ulBox.style.left = -this.count * liCount * this.channelWidth + 'px';
 		}
@@ -167,7 +178,6 @@ var Main = {
 		});
 		// 播放暂停功能
 		this.btn.addEventListener('click', function(){
-			// icon-bofangqi-zanting
 			if( this.classList.contains('icon-bofangqi-bofang') ){
 				_this.audio.play();
 				this.classList.remove('icon-bofangqi-bofang');
@@ -210,10 +220,10 @@ var Main = {
 		var _this = this;
 		// Ajax 获取歌曲内容
 		myAjax({
-			url:"http://api.jirengu.com/",
+			url:'http://api.jirengu.com/',
 			data:{
-				dataType: "fm/getSong.php?",
-				index: "channel="+ _this.channelId
+				dataType: 'fm/getSong.php?',
+				index: 'channel='+ _this.channelId
 			},
 			onSuccess: function(ret){
 				_this.song = ret.song[0];
@@ -222,10 +232,10 @@ var Main = {
 			},
 			onError: {
 				onError1: function(){
-					console.log("服务器异常！歌曲获取失败");
+					alert('服务器异常！歌曲获取失败');
 				},
 				onError2: function(){
-					console.log("网络异常！歌曲获取失败");
+					alert('网络异常！歌曲获取失败');
 				}
 			}
 		});
@@ -234,10 +244,10 @@ var Main = {
 		var _this = this;
 		// Ajax 获取歌词内容
 		myAjax({
-			url:"http://jirenguapi.applinzi.com/",
+			url:'http://jirenguapi.applinzi.com/',
 			data:{
-				dataType: "fm/getLyric.php?",
-				index: "&sid="+ _this.song.sid
+				dataType: 'fm/getLyric.php?',
+				index: '&sid='+ _this.song.sid
 			},
 			onSuccess: function(ret){
 				var lyricObj = {};
@@ -255,10 +265,10 @@ var Main = {
 			},
 			onError: {
 				onError1: function(){
-					console.log("服务器异常！歌曲获取失败");
+					alert('服务器异常！歌曲获取失败');
 				},
 				onError2: function(){
-					console.log("网络异常！歌曲获取失败");
+					alert('网络异常！歌曲获取失败');
 				}
 			}
 		});
@@ -285,7 +295,6 @@ var Main = {
 		if(hasLyric){
 			document.querySelector('.lyric').innerText = hasLyric;
 		}
-		// console.log(this.lyricObj["0"+min+":"+sec]);
 	}
 };
 
