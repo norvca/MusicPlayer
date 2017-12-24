@@ -1,3 +1,21 @@
+// Ajax GET请求封装
+function myAjax(options){
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', options.url + options.data.dataType + options.data.index, true);
+	xhr.onload = function(){
+		if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
+			var ret = JSON.parse(xhr.responseText);
+			options.onSuccess(ret);
+		}else{
+			options.onError.onError1();
+		}
+	};
+	xhr.onerror = function(){
+		options.onError.onError2();
+	};
+	xhr.send();
+}
+
 // 设置自定义事件
 var EventCenter = {
 	on: function(type, handler){
@@ -48,21 +66,25 @@ var Footer = {
 	},
 	render: function(){
 		var _this = this;
-		// ajax 获取歌曲封面数据
-		var xhr = new XMLHttpRequest();
-		xhr.open('GET', 'http://api.jirengu.com/fm/getChannels.php', true);
-		xhr.onload = function(){
-			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
-				var ret = JSON.parse(xhr.responseText);
+		// Ajax 获取封面内容
+		myAjax({
+			url:"http://api.jirengu.com/",
+			data:{
+				dataType: "fm/getChannels.php",
+				index: ""
+			},
+			onSuccess: function(ret){
 				_this.renderFooter(ret.channels);
-			}else{
-				alert('服务器异常！Ajax请求失败');
+			},
+			onError: {
+				onError1: function(){
+					console.log("服务器异常！封面获取失败");
+				},
+				onError2: function(){
+					console.log("网络异常！封面获取失败");
+				}
 			}
-		};
-		xhr.onerror = function(){
-			alert('网络错误！Ajax请求失败');
-		};
-		xhr.send();
+		});
 	},
 	// 底部渲染
 	renderFooter: function(channels){
@@ -187,31 +209,37 @@ var Main = {
 	loadMusic: function(){
 		var _this = this;
 		// Ajax 获取歌曲内容
-		var xhr = new XMLHttpRequest();
-		xhr.open('GET', 'http://api.jirengu.com/fm/getSong.php?channel='+ _this.channelId, true);
-		xhr.onload = function(){
-			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
-				var ret = JSON.parse(xhr.responseText);
+		myAjax({
+			url:"http://api.jirengu.com/",
+			data:{
+				dataType: "fm/getSong.php?",
+				index: "channel="+ _this.channelId
+			},
+			onSuccess: function(ret){
 				_this.song = ret.song[0];
 				_this.setMusic();
 				_this.loadLyric();
-			}else{
-				alert('服务器异常！Ajax请求失败');
+			},
+			onError: {
+				onError1: function(){
+					console.log("服务器异常！歌曲获取失败");
+				},
+				onError2: function(){
+					console.log("网络异常！歌曲获取失败");
+				}
 			}
-		};
-		xhr.onerror = function(){
-			alert('网络错误！Ajax请求失败');
-		};
-		xhr.send();
+		});
 	},
 	loadLyric: function(){
 		var _this = this;
 		// Ajax 获取歌词内容
-		var xhr = new XMLHttpRequest();
-		xhr.open('GET', 'http://jirenguapi.applinzi.com/fm/getLyric.php?&sid='+ _this.song.sid, true);
-		xhr.onload = function(){
-			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
-				var ret = JSON.parse(xhr.responseText);
+		myAjax({
+			url:"http://jirenguapi.applinzi.com/",
+			data:{
+				dataType: "fm/getLyric.php?",
+				index: "&sid="+ _this.song.sid
+			},
+			onSuccess: function(ret){
 				var lyricObj = {};
 				// 歌词拆解
 				ret.lyric.split('\n').forEach(function(line){
@@ -224,14 +252,16 @@ var Main = {
 					}
 				});
 				_this.lyricObj = lyricObj;
-			}else{
-				alert('服务器异常！歌词获取失败');
+			},
+			onError: {
+				onError1: function(){
+					console.log("服务器异常！歌曲获取失败");
+				},
+				onError2: function(){
+					console.log("网络异常！歌曲获取失败");
+				}
 			}
-		};
-		xhr.onerror = function(){
-			alert('网络错误！歌词获取失败');
-		};
-		xhr.send();
+		});
 	},
 	setMusic: function(){
 		this.btn.classList.remove('icon-bofangqi-bofang');
