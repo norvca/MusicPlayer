@@ -11,7 +11,7 @@
 ES5 + ajax + CSS3
 
 ## 预览地址
-http://js.jirengu.com/wezotuvige
+http://js.jirengu.com/disoz
 
 ## 项目进度
-目前完成全部静态页面部分和底部导航滑动效果和播放功能，下一阶段开发要点有区块状态、进度条处理、歌词处理等。
+主要功能完成，待修复一些BUG。

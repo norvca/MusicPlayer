@@ -94,6 +94,10 @@ main .actions .icon-xunhuanbofang {
     font-size: 4vh;
 }
 
+main .actions li .loop-active {
+	color: #fff;
+}
+
 main .actions .iconfont:hover {
 	color: #fff;
 }
