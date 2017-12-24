@@ -117,8 +117,10 @@ var Main = {
 	init: function(){
 		this.audio = new Audio();
 		this.audio.autoplay = true;
+		this.btnReturn = document.querySelector('.btn-return');
 		this.btn = document.querySelector('.btn-play');
 		this.next = document.querySelector('.btn-next');
+		this.download = document.querySelector('.icon-xiazai');
 		this.lyric = document.querySelector('.progress p');
 		this.progressBar = document.querySelector('.progress-bar');
 		this.innerProgressBar = document.querySelector('.progress-bar-inner');
@@ -131,6 +133,17 @@ var Main = {
 			_this.channelName = object.detail.channelName;
 			_this.loadMusic();
 		});
+		// 循环播放功能
+		this.btnReturn.addEventListener('click', function(){
+			if( _this.audio.loop === false){
+				_this.audio.loop = true;
+				_this.btnReturn.classList.add('loop-active');
+			}else {
+				_this.audio.loop = false;
+				_this.btnReturn.classList.remove('loop-active');
+			}
+		});
+		// 播放暂停功能
 		this.btn.addEventListener('click', function(){
 			// icon-bofangqi-zanting
 			if( this.classList.contains('icon-bofangqi-bofang') ){
@@ -143,8 +156,13 @@ var Main = {
 				this.classList.add('icon-bofangqi-bofang');
 			}
 		});
+		// 下一首功能
 		this.next.addEventListener('click', function(){
 			_this.loadMusic();
+		});
+		// 下载歌曲
+		this.download.addEventListener('click', function(){
+			window.location.assign(_this.audio.src);
 		});
 		// 监听歌曲的播放暂停
 		this.audio.addEventListener('play', function(){
@@ -156,6 +174,10 @@ var Main = {
 		});
 		this.audio.addEventListener('pause', function(){
 			clearInterval(_this.songPlayed);
+		});
+		// 音乐结束时播放下一首
+		this.audio.addEventListener('ended', function(){
+			_this.loadMusic();
 		});
 		// 点击进度条滑动
 		this.progressBar.addEventListener('click', function(e){
@@ -172,12 +194,42 @@ var Main = {
 				var ret = JSON.parse(xhr.responseText);
 				_this.song = ret.song[0];
 				_this.setMusic();
+				_this.loadLyric();
 			}else{
 				alert('服务器异常！Ajax请求失败');
 			}
 		};
 		xhr.onerror = function(){
 			alert('网络错误！Ajax请求失败');
+		};
+		xhr.send();
+	},
+	loadLyric: function(){
+		var _this = this;
+		// Ajax 获取歌词内容
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', 'http://jirenguapi.applinzi.com/fm/getLyric.php?&sid='+ _this.song.sid, true);
+		xhr.onload = function(){
+			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
+				var ret = JSON.parse(xhr.responseText);
+				var lyricObj = {};
+				// 歌词拆解
+				ret.lyric.split('\n').forEach(function(line){
+					var time = line.match(/\d{2}:\d{2}/);
+					var lyric = line.replace(/\[.+\]/, '');
+					if(Array.isArray(time)){
+						time.forEach(function(time){
+							lyricObj[time] = lyric;
+						});
+					}
+				});
+				_this.lyricObj = lyricObj;
+			}else{
+				alert('服务器异常！歌词获取失败');
+			}
+		};
+		xhr.onerror = function(){
+			alert('网络错误！歌词获取失败');
 		};
 		xhr.send();
 	},
@@ -198,6 +250,12 @@ var Main = {
 		sec = (sec.length == 2 ? sec : '0'+sec);
 		this.lyric.innerText = min + ':' + sec;
 		this.innerProgressBar.style.width = (this.audio.currentTime / this.audio.duration)*100 + '%';
+		// 歌词设置
+		var hasLyric = this.lyricObj['0'+min+':'+sec];
+		if(hasLyric){
+			document.querySelector('.lyric').innerText = hasLyric;
+		}
+		// console.log(this.lyricObj["0"+min+":"+sec]);
 	}
 };
 
