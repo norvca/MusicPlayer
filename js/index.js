@@ -71,8 +71,8 @@ var Footer = {
 			});
 			// 点击向 Main 区域发送 channel_id
 			EventCenter.fire('select-albumn', {
-				channelId: this.getAttribute('channel_id'),
-				channelName: this.getAttribute('channel_name')
+				channelId: el.getAttribute('channel_id'),
+				channelName: el.getAttribute('channel_name')
 			});
 		});
 	},
